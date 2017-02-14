@@ -127,20 +127,6 @@ sap.ui.define([
             this.startNode.attr({ x: coord[0], y: coord[1] }).toFront();
         }
     };
-    View.setFishboneLayout = function(gridX, gridY) {
-        var coord = View.toPageCoordinate(gridX, gridY);
-        if (!this.startNode) {
-            this.startNode = this.paper.rect(
-                coord[0],
-                coord[1],
-                nodeSize,
-                nodeSize
-            ).attr(nodeStyle.normal)
-             .animate(nodeStyle.blocked, 1000);
-        } else {
-            this.startNode.attr({ x: coord[0], y: coord[1] }).toFront();
-        }
-    };
     View.setEndPos = function(gridX, gridY) {
         var coord = View.toPageCoordinate(gridX, gridY);
         if (!this.endNode) {
@@ -158,12 +144,13 @@ sap.ui.define([
     /**
      * Set the attribute of the node at the given coordinate.
      */
-    View.setAttributeAt = function(nodes, gridX, gridY, attr, value) {
-        var color;
+    View.setAttributeAt = function(nodes, gridX, gridY, attr, value, blockedNode) {
+        var color,
+            node;
         switch (attr) {
         case 'walkable':
             color = value ? nodeStyle.normal.fill : nodeStyle.blocked.fill;
-            this.setWalkableAt(nodes, gridX, gridY, value);
+            node = this.setWalkableAt(nodes, gridX, gridY, value, blockedNode);
             break;
         case 'opened':
             this.colorizeNode(this.rects[gridY][gridX], nodeStyle.opened.fill);
@@ -187,6 +174,7 @@ sap.ui.define([
             console.error('unsupported operation: ' + attr + ':' + value);
             return;
         }
+        return node;
     };
     View.colorizeNode = function(node, color) {
         node.animate({
@@ -200,11 +188,15 @@ sap.ui.define([
             transform: this.nodeZoomEffect.transformBack,
         }, this.nodeZoomEffect.duration);
     };
-    View.setWalkableAt = function(nodes, gridX, gridY, value) {
-        var node, i;
-        var blockedNodes = new Array();
-        for(var j=0;j<36;j++) {
-            blockedNodes[j] = new Array();
+    View.setWalkableAt = function(nodes, gridX, gridY, value, blockedNode) {
+        var node, i, blockedNodes;
+        if (blockedNode) {
+            blockedNodes = blockedNode;
+        } else {
+            blockedNodes = new Array();
+            for(var j=0;j<36;j++) {
+                blockedNodes[j] = new Array();
+            }
         }
         if (!blockedNodes) {
             blockedNodes = this.blockedNodes = new Array(this.numRows);
@@ -216,11 +208,12 @@ sap.ui.define([
         if (value) {
             // clear blocked node
             if (node) {
-                this.colorizeNode(node, this.rects[gridY][gridX].attr('fill'));
+                /*this.colorizeNode(node, this.rects[gridY][gridX].attr('fill'));
                 this.zoomNode(node);
                 setTimeout(function() {
                     node.remove();
-                }, this.nodeZoomEffect.duration);
+                }, this.nodeZoomEffect.duration);*/
+                this.setReleaseNodePos(gridX, gridY);
                 blockedNodes[gridY][gridX] = null;
             }
         } else {
@@ -233,6 +226,7 @@ sap.ui.define([
             //this.colorizeNode(node, nodeStyle.blocked.fill);
             //this.zoomNode(node);
         }
+        return node;
     };
     View.setBlockedNodePos = function(gridX, gridY) {
         var coord = View.toPageCoordinate(gridX, gridY);
@@ -243,6 +237,16 @@ sap.ui.define([
             nodeSize
         ).attr(nodeStyle.blocked)
          .animate(nodeStyle.blocked, nodeColorizeEffect.duratio);
+    };
+    View.setReleaseNodePos = function(gridX, gridY) {
+        var coord = View.toPageCoordinate(gridX, gridY);
+        var blockedNode = this.paper.rect(
+            coord[0],
+            coord[1],
+            nodeSize,
+            nodeSize
+        ).attr(nodeStyle.normal)
+         .animate(nodeStyle.normal, nodeColorizeEffect.duratio);
     };
     View.clearFootprints = function(nodes) {
         var i, x, y, coord, coords = this.getDirtyCoords();

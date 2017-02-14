@@ -95,6 +95,13 @@ sap.ui.define([
 		    ],
 		}),
 
+		onInit: function() {
+			this.blockedNodes = new Array();
+	        for(var j=0;j<36;j++) {
+	            this.blockedNodes[j] = new Array();
+	        }
+		},
+
 		onAfterRendering: function() {
 			this.draw();
 		},
@@ -169,7 +176,7 @@ sap.ui.define([
 
 	        centerX = Math.ceil(width / 2 / 10);
 	        centerY = Math.floor(height / 2 / 10);
-	        this.drawFlyingVLayout(centerX, centerY);
+	        this.drawFishboneLayout(centerX, centerY);
 	        this.clearAll();
 	    },
 
@@ -186,44 +193,116 @@ sap.ui.define([
 	        }
 	    },
 	    drawFlyingVLayout:function(gridX, gridY) {
-	        this. drawTraditionalLayout(gridX, gridY);
-	        var sharpVX = this.startX + Math.round((this.endX-this.startX)/2);
-	        var sharpVY = this.endY+8;        
-	        this.setWalkableAt(sharpVX, sharpVY, true);
-	        if(sharpVX%4==0||sharpVX%4==2)
-	            {
-	                this.setWalkableAt(sharpVX+1, sharpVY, true);
-	            }
-	        else
-	            {
-	                 this.setWalkableAt(sharpVX-1, sharpVY, true);
-	                 sharpVX = sharpVX-1;
-	            }
-
-	         
+	        this.drawTraditionalLayout(gridX, gridY);
+	        var endX = gridX + 29,
+	     		startX = gridX - 30,
+	     		endY = gridY;
+	        var sharpVX = gridX - 27;
+	        var sharpVY = endY - 17;
 	        var sharpVXR= sharpVX;
-	        var sharpVXL= sharpVX;
-	        while(sharpVY>=2)
-	            {
-	                 sharpVY = sharpVY-4;
-	                 sharpVXR = sharpVXR + 4;
-	                 sharpVXL = sharpVXL - 4;
-	                
-	                 this.setWalkableAt(sharpVXR, sharpVY, true);
-	                this.setWalkableAt(sharpVXR, sharpVY+1, true);
-	                 this.setWalkableAt(sharpVXR+1, sharpVY, true);
-	                this.setWalkableAt(sharpVXR+1, sharpVY+1, true);
+	        var sharpVXL= sharpVX;  
+	        this.setWalkableAt(sharpVX, sharpVY, true);
+	        for(var i=0; i<26; i++) {
+        		if(i%4 === 0) {
+	                this.setWalkableAt(sharpVX + i, sharpVY + i, true);
+	                this.setWalkableAt(sharpVX + i, sharpVY + i + 1, true);
+	                this.setWalkableAt(sharpVX + i + 1, sharpVY + i + 1, true);
+	                this.setWalkableAt(sharpVX + i + 1, sharpVY + i + 2, true);
+	                sharpVXR = sharpVX + i;
+	                sharpVXL = sharpVY + i;
+	                this.setWalkableAt(sharpVX - i + 53, sharpVY + i, true);
+	                this.setWalkableAt(sharpVX - i + 53, sharpVY + i + 1, true);
+	                this.setWalkableAt(sharpVX - i + 52, sharpVY + i + 1, true);
+	                this.setWalkableAt(sharpVX - i + 52, sharpVY + i + 2, true);
+	        	}
+	        }
+	    },
 
-	                 this.setWalkableAt(sharpVXL, sharpVY, true);
-	                 this.setWalkableAt(sharpVXL+1, sharpVY, true);
-	                 this.setWalkableAt(sharpVXL, sharpVY+1, true);
-	                 this.setWalkableAt(sharpVXL+1, sharpVY+1, true);
-	            };
+	    drawFishboneLayout: function(gridX, gridY) {
+	    	var endX = gridX + 29,
+	     		startX = gridX - 30,
+	     		endY = gridY - 16;
+	        var startXZ = 23;
+	        var startYZ = 2;
+	        for (var i=0; i <= 20; i++) {
+	            for (var j=0; j<= 26; j++) {
+	                if (j % 4 === 0) {
+	                    if (j >= i) {
+	                        this.setWalkableAt(startX + i + 2, endY + j + 1, false);
+	                        this.setWalkableAt(startX + i + 2, endY + j + 2, false);
+	                        this.setWalkableAt(startX + i + 3, endY + j + 2, false);
+	                    }
+	                }
+	            }
+	        }
+	        /*for (var i=0; i<=7; i++) {
+	            this.setWalkableAt(startXZ, startYZ, false);
+	            this.setWalkableAt(startXZ, startYZ + 1, false);
+	            if (i === 7) {
+	                this.setWalkableAt(startXZ, startYZ + 6, false);
+	                this.setWalkableAt(startXZ, startYZ + 7, false);
+	            }
+	            startXZ += 4;
+	            startYZ += 4;
+	        }*/
+	        for (var i=0; i <= 20; i++) {
+	            for (var j=0; j<=i; j++) {
+	                if (i % 4 === 0) {
+	                    this.setWalkableAt(startX + i + 2, endY + j - 2, false);
+	                    this.setWalkableAt(startX + i + 3, endY + j - 2, false);
+	                    this.setWalkableAt(startX + i + 3, endY + j - 1, false);
+	                }
+	            }
+	        }
+	        for (var i=24; i <= 44; i++) {
+	            for (var j=24; j<=68-i; j++) {
+	                if (j % 4 === 0) {
+	                    this.setWalkableAt(startX + j + 6, endY + i - 26, false);
+	                    this.setWalkableAt(startX + j + 7, endY + i - 26, false);
+	                }
+	            }
+	        }
+	        /*for (var i=0; i<=25; i++) {
+	            this.setWalkableAt(startXZ, startYZ - i, false);
+	            this.setWalkableAt(startXZ - 1, startYZ - i, false);
+	        }
+	        startXZ += 3;
+	        startYZ -= 4;
+	        for (var i=0; i<=5; i++) {
+	            this.setWalkableAt(startXZ, startYZ, false);
+	            if (i === 0) {
+	                this.setWalkableAt(startXZ, startYZ + 6, false);
+	                this.setWalkableAt(startXZ, startYZ + 3, false);
+	                this.setWalkableAt(startXZ, startYZ + 7, false);
+	                for (var j=1; j<=21; j++) {
+	                    this.setWalkableAt(startXZ + j, startYZ + 6, false);
+	                    this.setWalkableAt(startXZ + j, startYZ + 7, false);
+	                    this.setWalkableAt(startXZ + j, startYZ + 2, false);
+	                    this.setWalkableAt(startXZ + j, startYZ + 3, false);
+	                }
+	            } else {
+	                this.setWalkableAt(startXZ, startYZ + 3, false);
+	                for (var j=1; j<=17; j++) {
+	                    if (startXZ + j <= 57) {
+	                        this.setWalkableAt(startXZ + j, startYZ + 2, false);
+	                        this.setWalkableAt(startXZ + j, startYZ + 3, false);
+	                    }
+	                }
+	            }
+	            startXZ += 4;
+	            startYZ -= 4;
+	        }*/
 	    },
 
 	    setWalkableAt: function(gridX, gridY, walkable) {
-	        Grid.setWalkableAt(this.grid, gridX, gridY, walkable);
-	        View.setAttributeAt(this.grid, gridX, gridY, 'walkable', walkable);
+	    	
+	    	Grid.setWalkableAt(this.grid, gridX, gridY, walkable);
+
+	    	if (walkable) {
+	    		this.blockedNodes[gridY][gridX] = View.setAttributeAt(this.grid, gridX, gridY, 'walkable', walkable, this.blockedNodes);
+	    	} else {
+	    		this.blockedNodes[gridY][gridX] = View.setAttributeAt(this.grid, gridX, gridY, 'walkable', walkable);
+	    	}
 	    },
 
 		_onRouteMatched : function (oEvent) {
