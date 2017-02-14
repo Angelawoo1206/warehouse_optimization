@@ -234,18 +234,6 @@ sap.ui.define([
 	                    }
 	                }
 	            }
-	        }
-	        /*for (var i=0; i<=7; i++) {
-	            this.setWalkableAt(startXZ, startYZ, false);
-	            this.setWalkableAt(startXZ, startYZ + 1, false);
-	            if (i === 7) {
-	                this.setWalkableAt(startXZ, startYZ + 6, false);
-	                this.setWalkableAt(startXZ, startYZ + 7, false);
-	            }
-	            startXZ += 4;
-	            startYZ += 4;
-	        }*/
-	        for (var i=0; i <= 20; i++) {
 	            for (var j=0; j<=i; j++) {
 	                if (i % 4 === 0) {
 	                    this.setWalkableAt(startX + i + 2, endY + j - 2, false);
@@ -257,41 +245,41 @@ sap.ui.define([
 	        for (var i=24; i <= 44; i++) {
 	            for (var j=24; j<=68-i; j++) {
 	                if (j % 4 === 0) {
-	                    this.setWalkableAt(startX + j + 6, endY + i - 26, false);
-	                    this.setWalkableAt(startX + j + 7, endY + i - 26, false);
+	                    this.setWalkableAt(startX + j + 10, endY + i - 26, false);
+	                    this.setWalkableAt(startX + j + 10, endY + i - 25, false);
+	                    this.setWalkableAt(startX + j + 11, endY + i - 26, false);
 	                }
 	            }
 	        }
-	        /*for (var i=0; i<=25; i++) {
-	            this.setWalkableAt(startXZ, startYZ - i, false);
-	            this.setWalkableAt(startXZ - 1, startYZ - i, false);
+	        for (var i=0; i<=25; i++) {
+                this.setWalkableAt(startX + 26, endY + i -2, false);
+                this.setWalkableAt(startX + 27, endY + i -2, false);
+                this.setWalkableAt(startX + 30, endY + i -2, false);
+                this.setWalkableAt(startX + 31, endY + i -2, false);
 	        }
-	        startXZ += 3;
-	        startYZ -= 4;
+	        startXZ = startX + 34;
+	        startYZ = endY + 22;
 	        for (var i=0; i<=5; i++) {
 	            this.setWalkableAt(startXZ, startYZ, false);
 	            if (i === 0) {
-	                this.setWalkableAt(startXZ, startYZ + 6, false);
-	                this.setWalkableAt(startXZ, startYZ + 3, false);
-	                this.setWalkableAt(startXZ, startYZ + 7, false);
+	                this.setWalkableAt(startXZ, startYZ + 4, false);
 	                for (var j=1; j<=21; j++) {
-	                    this.setWalkableAt(startXZ + j, startYZ + 6, false);
-	                    this.setWalkableAt(startXZ + j, startYZ + 7, false);
-	                    this.setWalkableAt(startXZ + j, startYZ + 2, false);
+	                    this.setWalkableAt(startXZ + j, startYZ, false);
+	                    this.setWalkableAt(startXZ + j, startYZ - 1, false);
+	                    this.setWalkableAt(startXZ + j, startYZ + 4, false);
 	                    this.setWalkableAt(startXZ + j, startYZ + 3, false);
 	                }
 	            } else {
-	                this.setWalkableAt(startXZ, startYZ + 3, false);
 	                for (var j=1; j<=17; j++) {
-	                    if (startXZ + j <= 57) {
-	                        this.setWalkableAt(startXZ + j, startYZ + 2, false);
-	                        this.setWalkableAt(startXZ + j, startYZ + 3, false);
+	                    if (startXZ + j < 77) {
+	                        this.setWalkableAt(startXZ + j, startYZ - 1, false);
+	                        this.setWalkableAt(startXZ + j, startYZ, false);
 	                    }
 	                }
 	            }
 	            startXZ += 4;
 	            startYZ -= 4;
-	        }*/
+	        }
 	    },
 
 	    setWalkableAt: function(gridX, gridY, walkable) {
