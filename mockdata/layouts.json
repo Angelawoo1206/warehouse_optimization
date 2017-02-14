@@ -1,0 +1,16 @@
+{
+    "DefaultLayoutCollection":[
+        {
+            "id":1,
+            "name":"Tranditional"
+        },
+        {
+            "id":2,
+            "name":"Flying V"
+        },
+        {
+            "id":3,
+            "name":"Fish Bone"
+        }  
+    ]
+}

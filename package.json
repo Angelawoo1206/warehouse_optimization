@@ -1,0 +1,24 @@
+{
+    "name": "warehouseoptimization",
+    "version": "0.6.1",
+    "description": "warehouse optimization",
+    "main": "index.html",
+    "dependencies": {
+        "express": "~3.4.8",
+        "open": "~0.0.4"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.2",
+        "grunt-express-server": "~0.4.11",
+        "grunt-contrib-watch": "~0.5.3",
+        "grunt-open": "~0.2.3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.wdf.sap.corp/I319370/warehouse-optimization.git"
+      },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "6of5"
+}

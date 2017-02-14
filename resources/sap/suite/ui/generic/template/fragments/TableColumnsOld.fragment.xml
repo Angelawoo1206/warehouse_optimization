@@ -1,0 +1,177 @@
+<core:FragmentDefinition
+	xmlns:customData="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+	xmlns="sap.m" xmlns:build="sap.build" xmlns:sfi="sap.ui.comp.smartfield"
+	xmlns:core="sap.ui.core">
+    <!-- @classdesc @name: Name: sap.suite.ui.generic.template.fragments.TableColumns.fragment.xml
+		@description: Visualizes one column (header and data) of a responsive table, as part of an object page
+		@param {UI.LineItem} [collection] @param {Edm.EntitySet} [listEntitySet] -->
+
+	<columns>
+		<template:repeat list="{collection>}" var="dataField">
+			<template:with path="dataField>"
+				helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="target">
+				<template:if
+					test="{= ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataField' || ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldWithUrl' || ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation' || ((${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForAction' || ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation') &amp;&amp; ${dataField>Inline/Bool} === 'true')}"
+					build:metadata="#ignore">
+					<template:with path="dataField>Value"
+						helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="dataFieldValue">
+						<template:with helper="sap.ui.model.odata.AnnotationHelper.resolvePath" path="dataField>Target" var="dataFieldTarget">
+							<template:with helper="sap.ui.model.odata.AnnotationHelper.resolvePath" path="dataFieldTarget>Value" var="dataFieldTargetValue">
+								<Column
+									customData:p13nData="{parts: [{path: 'listEntitySet>'}, {path: 'dataFieldValue>'}, {path: 'dataField>'}, {path: 'dataFieldTarget>'}, {path: 'dataFieldTargetValue>'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.createP13N'}"
+									visible="{= ${target>com.sap.vocabularies.UI.v1.Importance/EnumMember} === 'com.sap.vocabularies.UI.v1.ImportanceType/High' ? 'true' :
+										( ${target>com.sap.vocabularies.UI.v1.Importance/EnumMember} === 'com.sap.vocabularies.UI.v1.ImportanceType/Medium' &amp;&amp; ( ${device>/system/tablet} || ${device>/system/desktop} ) ? 'true' : ${device>/system/desktop} ? 'true' : 'false' ) }"
+									hAlign="{= ${dataField>Criticality} ? '' : (!!${dataField>EdmType} &amp;&amp; ${dataField>EdmType} !== 'Edm.String' &amp;&amp; ${dataField>EdmType} !== 'Edm.Boolean' &amp;&amp; ${dataField>EdmType} !== 'Edm.Guid' ? 'End' : (${dataField>RecordType} !== 'com.sap.vocabularies.UI.v1.DataField' ? 'Center' : ''))}"
+									build:metadata="#pattern:Column;staticProp::Importance:\{target>com.sap.vocabularies.UI.v1.Importance/EnumMember\};condition:collection>AnnotationType:com.sap.vocabularies.UI.v1.LineItem">
+		                            <template:if test="{dataField>Label}" build:metadata="#ignore">
+		                                <template:then build:metadata="#ignore">
+		                                    <Text
+		                                        text="{path: 'dataField>Label', formatter: 'sap.ui.model.odata.AnnotationHelper.format'}"
+		                                        visible="{= ${dataField>Inline/Bool} === 'true' ? 'false' : 'true'}"
+		                                        build:metadata="#pattern:Column;staticProp:text:Title;" />
+		                                </template:then>
+		                                <template:elseif test="{dataFieldTarget>Title}">
+											<Text
+												text="{path: 'dataFieldTarget>Title', formatter: 'sap.ui.model.odata.AnnotationHelper.format'}" />
+										</template:elseif>
+										<template:elseif test="{dataFieldTargetValue>com.sap.vocabularies.Common.v1.Label}">
+											<Text
+												text="{path: 'dataFieldTargetValue>com.sap.vocabularies.Common.v1.Label', formatter: 'sap.ui.model.odata.AnnotationHelper.format'}" />
+										</template:elseif>
+		                                <template:else>
+		                                    <Text
+		                                        text="{path: 'dataFieldValue>com.sap.vocabularies.Common.v1.Label', formatter: 'sap.ui.model.odata.AnnotationHelper.format'}"
+		                                        visible="{= ${dataField>Inline/Bool} === 'true' ? 'false' : 'true'}" />
+		                                </template:else>
+		                            </template:if>
+								</Column>
+							</template:with>
+						</template:with>
+					</template:with>
+				</template:if>
+			</template:with>
+		</template:repeat>
+		<template:if test="{= ${facet>Target/AnnotationPath} }">
+			<template:then>
+				<core:ExtensionPoint
+					name="ResponsiveTableColumnsExtension|{listEntitySet>name}|{path: 'facet>', formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getStableIdPartFromFacet'}" />
+			</template:then>
+			<template:else>
+				<core:ExtensionPoint
+					name="ResponsiveTableColumnsExtension|{listEntitySet>name}" />
+			</template:else>
+		</template:if>
+	</columns>
+	<items>
+		<ColumnListItem
+			type="{parts: [{path: 'listEntitySet>'}, {path: 'parameter>/settings/subPages/'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getColumnListItemType'}"
+			press="._templateEventHandlers.onListNavigate">
+			<customData>
+				<core:CustomData key="CrossNavigation"
+					value="{parts: [{path: 'listEntitySet>name'}, {path: 'parameter>/settings/subPages/'}, {path: 'facet>Target/AnnotationPath'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getDisplayNavigationIntent'}" />
+			</customData>
+			<cells>
+				<template:repeat list="{collection>}" var="dataField">
+					<template:if
+                        test="{= ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataField' || ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation' || ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldWithUrl'}"
+						build:metadata="#ignore">
+						<template:then>
+	                        <VBox class="sapMTableContentMargin">
+	                            <items>
+	                                <template:with path="dataField>" helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="target">
+		                                <template:if test="{= ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation'}">
+											<template:then>
+												<template:with path="dataField>Target" helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="dataPoint">
+													<template:if test="{= ${dataPoint>Visualization}}">
+														<template:then>
+															<template:if test="{= ${dataPoint>Visualization/EnumMember} === 'com.sap.vocabularies.UI.v1.VisualizationType/Rating'}">
+																<template:then>
+																     <template:with path="dataPoint>Value" helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="value">
+																        <!--Due to SideEffect issues the RatingIndicator is not editable-->
+																		<RatingIndicator
+		   																	enabled="false"
+		   																	maxValue="{path: 'dataPoint>TargetValue', formatter: 'sap.ui.model.odata.AnnotationHelper.format'}"
+		   																	value="{path: 'dataPoint>Value', formatter: 'sap.ui.model.odata.AnnotationHelper.format'}"/>
+	   																</template:with>
+																</template:then>
+																<template:elseif test="{= ${dataPoint>Visualization/EnumMember} === 'com.sap.vocabularies.UI.v1.VisualizationType/Progress'}">
+																    <template:with path="dataPoint>Value" helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="value">
+	    															    <ProgressIndicator
+	        																enabled="false"
+	        																state="{parts:[{path: 'dataField>Criticality'}, {path: 'dataPoint>Criticality'}], formatter:'sap.suite.ui.generic.template.js.AnnotationHelper.createProgressStateFormatter'}"
+	        																percentValue="{parts: [{path: 'dataPoint>'}, {path: 'value>'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.createProgressFormatter'}">
+	    																    <template:if test="{= ${dataPoint>TargetValue/Decimal}}">
+	    																        <template:then>
+	    																            <customData>
+	    																                <core:CustomData key="fixTargetValue" value="{dataPoint>TargetValue/Decimal}"/>
+	    																            </customData>
+	    																        </template:then>
+	    																    </template:if>
+	    																</ProgressIndicator>
+	                                                                </template:with>
+																</template:elseif>
+															</template:if>
+														</template:then>
+													</template:if>
+												</template:with>
+											</template:then>
+											<template:else>
+			                                    <template:with path="dataField>Value" helper="sap.ui.model.odata.AnnotationHelper.resolvePath" var="target">
+			                                        <template:if test="{path: 'target>', formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.isImageUrl'}">
+			                                            <template:then>
+			                                                <Image src="{path: 'dataField>Value' , formatter: 'sap.ui.model.odata.AnnotationHelper.format'}"
+			                                                       width="3rem" height="3rem" densityAware="false" />
+			                                            </template:then>
+			                                            <template:else>
+														<sfi:SmartField contextEditable="{ui>/editable}"
+																			uomEditable="false" clientSideMandatoryCheck="false"
+			                                                                change="._templateEventHandlers.onChange"
+			                                                                controlContext="ResponsiveTable"
+			                                                                value="{path: 'dataField>Value', formatter: 'sap.ui.model.odata.AnnotationHelper.simplePath'}"
+			                                                                url="{= ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldWithUrl' &amp;&amp; ${dataField>Url} ? ${path: 'dataField>Url', formatter: 'sap.ui.model.odata.AnnotationHelper.simplePath'} : ''}"
+			                                                                build:metadata="#pattern:Column;prop:virtualProp1:Value:\{dataField>Value\};prop:virtualProp2:Currency:\{dataField>Value@@Org.OData.Measures.V1.ISOCurrency\};prop:additionalValue:AdditionalValue:\{dataField>Value@@com.sap.vocabularies.Common.v1.Text\};prop:virtualProp3:Url:\{dataField>Url\};"
+			                                                                press="{= ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldWithUrl' &amp;&amp; ${dataField>Url} ? '._templateEventHandlers.onSmartFieldUrlPressed' : ''}">
+																<sfi:configuration>
+																	<sfi:Configuration displayBehaviour="{parts: [{path: 'dataField>'}, {path: 'listEntitySet>'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getTextArrangementForSmartControl'}" />
+																</sfi:configuration>
+					                                            <template:if test="{= ${dataField>Criticality} }">
+			                                                        <sfi:controlProposal>
+			                                                            <sfi:ControlProposal>
+			                                                                <sfi:objectStatus>
+			                                                                    <sfi:ObjectStatus criticality="{path: 'dataField>Criticality', formatter: 'sap.ui.model.odata.AnnotationHelper.simplePath'}"
+			                                                                    				  criticalityRepresentationType="{= (${dataField>CriticalityRepresentation/EnumMember} === 'com.sap.vocabularies.UI.v1.CriticalityRepresentationType/WithoutIcon') ? 'WithoutIcon' : 'WithIcon'}"
+			                                                                                      build:metadata="#pattern:Column;prop:criticality:Criticality;" />
+			                                                                </sfi:objectStatus>
+			                                                            </sfi:ControlProposal>
+			                                                        </sfi:controlProposal>
+			                                                    </template:if>
+			                                                </sfi:SmartField>
+			                                            </template:else>
+			                                        </template:if>
+			                                    </template:with>
+											</template:else>
+		                                </template:if>
+	                                </template:with>
+	                            </items>
+	                        </VBox>
+						</template:then>
+						<template:elseif test="{= (${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForAction' || ${dataField>RecordType} === 'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation') &amp;&amp; ${dataField>Inline/Bool} === 'true'}">
+                            <core:Fragment fragmentName="sap.suite.ui.generic.template.fragments.InlineButton" type="XML"/>
+						</template:elseif>
+					</template:if>
+				</template:repeat>
+				<template:if test="{= ${facet>Target/AnnotationPath} }">
+					<template:then>
+						<core:ExtensionPoint
+							name="ResponsiveTableCellsExtension|{listEntitySet>name}|{path: 'facet>', formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getStableIdPartFromFacet'}" />
+					</template:then>
+					<template:else>
+						<core:ExtensionPoint
+							name="ResponsiveTableCellsExtension|{listEntitySet>name}" />
+					</template:else>
+				</template:if>
+			</cells>
+		</ColumnListItem>
+	</items>
+</core:FragmentDefinition>

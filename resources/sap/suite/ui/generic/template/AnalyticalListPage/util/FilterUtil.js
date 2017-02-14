@@ -1,0 +1,1 @@
+sap.ui.define(["sap/ui/base/Object","sap/ui/model/Context"],function(B,C){"use strict";var F=B.extend("sap.suite.ui.generic.template.AnalyticalListPage.util.FilterUtil");F.createTitle=function(d,D){var t;if(d.indexOf(':')!==-1){d=d.substring(0,d.indexOf(':'));}if(d.indexOf(D)===-1){t=d+" ("+D+")";}else{t=d;}return t;};return F;},true);

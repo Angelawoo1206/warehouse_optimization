@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns:build="sap.build"
+	xmlns:core="sap.ui.core" xmlns:lib="sap.ovp.cards.map.GeographicalMap"
+	xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+	xmlns="sap.m" xmlns:vbm="sap.ui.vbm">
+	<!--Show Map -->
+	<template:with path="ovpCardProperties>/geoLocationAnnotationPath"
+		helper="sap.ovp.cards.AnnotationHelper.resolveEntityTypePath" var="geoLocation">
+		<template:if test="{entitySet>name}">
+			<vbm:GeoMap id="oVBI" class="ovpImageContainer" width="100%"
+				disableZoom="true" disablePan="true">
+				<vbm:Spots id="Spots"
+					items="{= ${entitySet>name} ? '{/' + ${entitySet>name} + '}' : '' }">
+					<vbm:Spot id="Spot"
+						labelType="{path: 'geoLocation>', formatter: 'sap.ovp.cards.AnnotationHelper.criticalityType'}"
+						position="{path: 'geoLocation>', formatter: 'sap.ovp.cards.AnnotationHelper.formatterGeo'} "
+						labelPos="1"
+						labelText="{path: 'geoLocation>', formatter: 'sap.ovp.cards.AnnotationHelper.labelText'}" />
+				</vbm:Spots>
+			</vbm:GeoMap>
+	</template:if>
+	</template:with>
+</core:FragmentDefinition>

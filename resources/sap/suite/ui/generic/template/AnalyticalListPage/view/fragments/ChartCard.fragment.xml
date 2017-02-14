@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+						 xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:build="sap.build" xmlns:ovp="sap.ovp"
+						 xmlns:l="sap.ui.layout">
+
+		<l:VerticalLayout class="ovp_container">
+
+			<VBox id="alr_compactFilterContainer" class=" alr_compactFilterContainer">
+				<core:Fragment fragmentName="sap.ovp.cards.charts.analytical.analyticalChart" type="XML"/>
+			</VBox>
+		<!--</VBox>-->
+		</l:VerticalLayout>
+
+</core:FragmentDefinition>

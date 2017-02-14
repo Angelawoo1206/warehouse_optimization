@@ -1,0 +1,19 @@
+<core:FragmentDefinition xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+						 xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:build="sap.build"
+						 xmlns:l="sap.ui.layout">
+
+		<VBox class="alr_inheritHeight alr_contentContainer sapUiResponsiveContentPadding" id="alr_contentContainer">
+			<VBox id="alr_chartContainer" class="alr_inheritHeight alr_chartContainer">
+					<core:Fragment fragmentName="sap.suite.ui.generic.template.AnalyticalListPage.view.fragments.SmartChart" type="XML"/>
+			</VBox>
+			<template:if test="{parameter>/settings/dsAppName}">
+				<VBox id="alr_dshContainer" class="alr_dshContainer">
+					<core:Fragment fragmentName="sap.suite.ui.generic.template.AnalyticalListPage.view.fragments.Crosstab" type="XML"/>
+				</VBox>
+			</template:if>
+			<VBox id="alr_detailContainer" class="alr_inheritHeight alr_tableContainer">
+				<core:Fragment fragmentName="sap.suite.ui.generic.template.AnalyticalListPage.view.fragments.DetailSmartTable" type="XML"/>
+			</VBox>
+		</VBox>
+
+</core:FragmentDefinition>

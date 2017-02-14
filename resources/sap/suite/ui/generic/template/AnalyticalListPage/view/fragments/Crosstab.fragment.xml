@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+						 xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:build="sap.build"
+						 xmlns:l="sap.ui.layout">
+
+
+	<VBox id="alr_InnerDshContainer" class="dshContainer">
+		<OverflowToolbar design="Transparent" class="alr_dshToolbar" id="alr_dshToolbar">
+			<ToolbarSpacer/>
+		</OverflowToolbar>	
+	</VBox>
+	
+
+</core:FragmentDefinition>

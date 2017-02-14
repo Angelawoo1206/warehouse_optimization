@@ -1,0 +1,13 @@
+<mvc:View
+	controllerName="sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:layout="sap.ui.layout"
+	xmlns:forms="sap.ui.layout.form"
+	xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Panel width="100%">
+		<content>
+			<html:div id="draw_area"></html:div>
+		</content>
+	</Panel>
+</mvc:View>

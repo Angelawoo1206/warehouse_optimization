@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<library  version="2.0" name="sap.zen.dsh">
+  <module name="sap/zen/dsh/Dsh.js" size="24879" compressedSize="7171" requiresTopLevelScope="true" exposedGlobals="DSH_deployment,sapbi_dshControl,sapbi_ajaxHandler,sapbi_MIMES_PIXEL">
+    <description>Provides control sap.zen.dsh.Dsh.</description>
+    <requires>
+      <module name="sap/zen/dsh/library.js"/>
+      <module name="sap/ui/core/Control.js"/>
+      <module name="sap/zen/dsh/rt/all.js" conditional="true"/>
+      <module name="jquery.sap.global.js"/>
+    </requires>
+  </module>
+  <module name="sap/zen/dsh/DshRenderer.js" size="1086" compressedSize="477">
+    <requires>
+      <module name="jquery.sap.global.js"/>
+    </requires>
+  </module>
+  <module name="sap/zen/dsh/applications/0ANALYSIS/localization.properties" size="3467">
+  </module>
+  <module name="sap/zen/dsh/fioriwrapper/Component.js" size="3253" compressedSize="1915">
+    <requires>
+      <module name="sap/ui/core/UIComponent.js"/>
+      <module name="sap/zen/dsh/Dsh.js" conditional="true"/>
+      <module name="sap/ui/generic/app/navigation/service/NavigationHandler.js" conditional="true"/>
+      <module name="jquery.sap.global.js"/>
+    </requires>
+  </module>
+  <module name="sap/zen/dsh/fioriwrapper/manifest.json" size="1353">
+  </module>
+  <module name="sap/zen/dsh/library.js" size="1454" compressedSize="700">
+    <description>Initialization Code and shared classes of library sap.zen.dsh (1.44.3)</description>
+    <requires>
+      <module name="sap/ui/core/Core.js"/>
+      <module name="sap/ui/core/library.js"/>
+      <module name="sap/ui/table/library.js"/>
+      <module name="sap/ui/layout/library.js"/>
+      <module name="sap/m/library.js"/>
+      <module name="sap/viz/library.js"/>
+      <module name="sap/zen/commons/library.js"/>
+      <module name="sap/zen/crosstab/library.js"/>
+      <module name="jquery.sap.global.js"/>
+    </requires>
+  </module>
+  <module name="sap/zen/dsh/library.properties" size="189">
+  </module>
+</library>

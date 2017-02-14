@@ -1,0 +1,158 @@
+/***** UI5 belize bug start *****/
+
+.alr_contentContainer .sapMBtnTransparent.sapMSegBBtnSel>.sapMBtnIcon {
+	color:#ffffff;
+}
+
+/***** UI5 belize bug end *****/
+
+
+/***** Required start *****/
+
+.alr_filterContainer.sapUiVlt {
+	display:block;
+	overflow:inherit;
+}
+
+.alr_inheritHeight {
+	height:inherit;
+}
+
+/***** Required end *****/
+
+
+/***** UI Tweaks start *****/
+.analyticalListPage .sapMTB,
+.sapUiCompSmartFullScreenDialog .alr_contentContainer .sapMTB,
+.sapSmartTemplatesAnalyticalListPageSmartChart .sapMTB {
+	border-bottom-color:transparent;
+}
+
+.sapMTB-Transparent-CTX .sapMLabel.alr_contentMeasureTitle {
+	font-weight:bold;
+}
+
+
+.sapMListBGTranslucent .alr_rowHighlighted.sapMLIB.sapMListTblRow, /* sap.m.Table */
+.alr_rowHighlighted, /* sap.ui.table.AnalyticalTable */
+.sapUiTableCtrl .sapUiTableGroupHeader.alr_rowHighlighted, /* sap.ui.table.AnalyticalTable grouped node - content data area */
+.sapUiTableRowHdr.sapUiTableGroupHeader.alr_rowHighlighted,  /* sap.ui.table.AnalyticalTable grouped node - row selector area */
+.sapUiTable .sapUiTableCtrl .sapUiTableRowHvr.alr_rowHighlighted > td, /* sap.ui.table.AnalyticalTable grouped node - cell hover state */
+.sapUiTable .sapUiTableRowHdr.sapUiTableGroupHeader.sapUiTableRowHvr.alr_rowHighlighted { /* sap.ui.table.AnalyticalTable grouped node - row selector area - hover state */
+	background-color: rgba(230, 237, 243, 1);
+}
+
+.alr_dshToolbar,
+.alr_tableContainer>.sapUiCompSmartTable .sapMTB {
+	margin-bottom: 0.75rem;
+	border-bottom-color:transparent;
+}
+
+.alr_visualFilterToolbar.sapMIBar>.sapMBarChild:last-child,
+.alr_contentContainer .sapMIBar>.sapMBarChild.sapMSegB:last-child {
+	margin-right: 0;
+}
+
+.alr_visualFilterToolbar.sapMIBar .sapMBarChild:first-child {
+	margin-left: 1.25rem;
+}
+
+/* hardcoded background-color in control.css from sap\viz\ui5\controls\css\controls.css, forced to overwrite here, other transparent backgrounds can be specified in the configuration of the VizFrame */
+.sapSuiteVisualFilterBar .ui5-viz-controls-app, .sapSuiteVisualFilterBar .ui5-viz-controls-viz-frame {
+	background-color: transparent;
+}
+
+.sapSuiteVisualFilterBar .ui5-viz-controls-viz-frame .v-datapoint-group .v-datapoint > rect {
+	rx: 3px;
+	ry: 3px;
+}
+
+.alr_visualFilterToolbar {
+	margin-right: 2rem;
+}
+
+.alr_visualFilterToolbar.closed {
+	margin-bottom: 1rem;
+}
+
+.alr_visualFilterTitleToolbar.sapMTB { /* not possible to hide the line at the bottom of the toolbar via settings, have to do this via CSS */
+	border-bottom: none;
+}
+
+.alr_graphicalFilterDialogChartContainer {
+	padding-top: 1rem;
+	padding-bottom: 2rem;
+	background-color: transparent;
+}
+
+.alr_visualFilterContainer .sapSuiteHrdrCntrInner.sapSuiteUiCommonsHeaderCell:first-child {
+	padding-left:2rem;
+}
+
+/***** UI Tweaks end *****/
+
+/***** new controls start *****/
+
+.alrKpiTagContainer {
+
+}
+
+.alrKpiTag {
+	height: 2rem;
+	background-color: white;
+	border-left-color: #EA5C1A;
+	border-left-width: 0.35rem;
+	border-style: solid;
+	border-top-style: none;
+	border-bottom-style: none;
+	border-right-style: none;
+	padding-left: 8px;
+	padding-right: 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+}
+
+.alrKpiTagValue {
+	line-height: 2rem;
+}
+
+.alrKpiTagName {
+	line-height: 2rem;
+	margin-right: 1.5rem;
+	color: #666;
+}
+
+.alrKPINeutral {
+	color: #848f94;
+	border-left-color: #848f94;
+}
+
+.alrKPICritical {
+	color: #d14900;
+	border-left-color: #d14900;
+}
+
+.alrKPIPositive {
+	color: #007833;
+	border-left-color: #007833;
+}
+
+.alrKPINegative {
+	color: #cc1919;
+	border-left-color: #cc1919;
+}
+
+.alrKpiCardTitleLabel {
+
+}
+
+.alrKpiCardSubTitleLabel {
+
+}
+/***** new controls end *****/
+
+/***** kpi card vizchart background override .. didn't find another way .. *****/
+.alrKpiCardVizBoxContainer .ui5-viz-controls-viz-frame, .alrKpiCardVizBoxContainer .ui5-viz-controls-app {
+	background-color: transparent;
+}

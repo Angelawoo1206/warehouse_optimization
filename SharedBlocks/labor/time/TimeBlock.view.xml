@@ -1,0 +1,36 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:layout="sap.ui.layout" xmlns:forms="sap.ui.layout.form" xmlns="sap.m">
+	<VBox class="sapUiSmallMargin">
+		<forms:SimpleForm id="SimpleFormDisplay354"
+			editable="false"
+			layout="ResponsiveGridLayout"
+			title="Minimum Processing Time"
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" >
+			<forms:content>
+				<Label text="Processing Time" />
+				<Text text="{laborResult>/min_days/days} {= ${laborResult>/min_days/days} > 1 ? 'Days' : 'Day'} " />
+				<Label text="Total cost" />
+				<Text text="{view>/min_time_total_cost}" />
+				<Label text="OT Working Time" />
+				<Text text="{laborResult>/min_days/overtime} {= ${laborResult>/min_days/overtime} > 1 ? 'Days' : 'Day'} " />
+				<Label text="OT Cost" />
+				<Text text="{laborResult>/min_days/overtime_cost}" />
+                <Label text="Temporary Worker Working Time" />
+				<Text text="{laborResult>/min_days/work_time_of_temporary} {= ${laborResult>/min_days/work_time_of_temporary} > 1 ? 'Days' : 'Day'} " />
+                <Label text="Temporary Staff Worker Cost" />
+				<Text text="{laborResult>/min_days/temporary_cost}" />
+			</forms:content>
+		</forms:SimpleForm>
+	</VBox>
+</mvc:View>

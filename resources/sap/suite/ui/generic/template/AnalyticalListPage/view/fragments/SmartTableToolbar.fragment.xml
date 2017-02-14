@@ -1,0 +1,31 @@
+<core:FragmentDefinition xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+						 xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:build="sap.build">
+
+	<OverflowToolbar design="Transparent">
+		<ToolbarSpacer/>
+		<!-- Custom Action Breakout -->
+		<template:repeat list="{parameter>/manifest/sap.ui5/extends/extensions/sap.ui.controllerExtensions/sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage/sap.ui.generic.app}" var="tmpEntitySet">
+			<core:Fragment fragmentName="sap.suite.ui.generic.template.fragments.BreakoutActions"
+					type="XML"/>
+		</template:repeat>
+		<template:with path="workingContext>lineItemPath" helper=".ALPHelper.resolveMetaModelPath" var="collection">
+            <core:Fragment fragmentName="sap.suite.ui.generic.template.fragments.AnnotatedActionButtons" type="XML"/>
+		</template:with>
+		<template:if test="{= (${entityType>sap:semantics} === 'aggregate' || ${parameter>/settings/gridTable}) &amp;&amp; !${device>/system/phone}}">
+	        <Button
+                text="{i18n>NAVIGATE_TO_DETAIL}"
+                visible="{= !${_templPriv>/listReport/isLeaf} }"
+                type="Transparent"
+	            press="._templateEventHandlers.onShowDetails">
+				<template:if
+					test="{parts: [{path: 'parameter>/entitySet'}, {path: 'parameter>/settings/subPages/'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getDisplayNavigationIntent'}">
+					<customData>
+						<core:CustomData key="CrossNavigation"
+							value="{parts: [{path: 'parameter>/entitySet'}, {path: 'parameter>/settings/subPages/'}], formatter: 'sap.suite.ui.generic.template.js.AnnotationHelper.getDisplayNavigationIntent'}" />
+					</customData>
+				</template:if>
+	        </Button>
+		</template:if>
+	</OverflowToolbar>
+
+</core:FragmentDefinition>

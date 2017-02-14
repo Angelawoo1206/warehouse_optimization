@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Alias="Experimental" Namespace="com.sap.test.vocabularies.Experimental.v1">
+
+		<Term Name="VisualFilterSet" Type="Experimental.VisualFilterBarDefinitionType" AppliesTo="EntityType" />
+		<ComplexType Name="VisualFilterBarDefinitionType">
+			<Property Name="Filters" Type="Collection(Experimental.VisualFilter)" />
+		</ComplexType>
+
+		<Term Name="VisualFilter" Type="Experimental.VisualFilterDefinitionType" AppliesTo="EntityType" />
+		<ComplexType Name="VisualFilterDefinitionType">
+			<Property Name="Type" Type="Experimental.VisualFilterType" Nullable="false"/>
+			<Property Name="Selected" Type="Edm.Boolean" Nullable="false"/>
+			<Property Name="Dimensions" Type="Collection(Experimental.Dimension)" Nullable="false"/>
+			<Property Name="Mesaures" Type="Collection(Experimental.Measure)" Nullable="false"/>
+		</ComplexType>
+
+		<Term Name="Dimension" Type="Experimental.DimensionDefinitionType" AppliesTo="EntityType" />
+		<ComplexType Name="DimensionDefinitionType">
+			<Property Name="Field" Type="Edm.String" Nullable="false"/>
+		</ComplexType>
+
+		<Term Name="Measure" Type="Experimental.MeasureDefinitionType" AppliesTo="EntityType" />
+		<ComplexType Name="MeasureDefinitionType">
+			<Property Name="Field" Type="Edm.String" Nullable="false"/>
+			<Property Name="Descending" Type="Edm.Boolean" Nullable="false"/>
+		</ComplexType>
+
+      <EnumType Name="VisualFilterType">
+        <Member Name="Bar" />
+        <Member Name="Donut" />
+        <Member Name="Line" />
+      </EnumType>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
