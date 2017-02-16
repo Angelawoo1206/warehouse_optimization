@@ -40,6 +40,18 @@ sap.ui.define([
             fill: '#e5e5e5',
             'stroke-opacity': 0.2,
         },
+        high: {
+            fill: '#DC143C',
+            'stroke-opacity': 0.2,
+        },
+        medium: {
+            fill: '#DAA520',
+            'stroke-opacity': 0.2,
+        },
+        low: {
+            fill: '#1E90FF',
+            'stroke-opacity': 0.2,
+        },
     },
     nodeColorizeEffect = {
         duration: 50,
@@ -58,6 +70,9 @@ sap.ui.define([
         this.numCols      = opts.numCols;
         this.numRows      = opts.numRows;
         this.paper        = Raphael(opts.draw_area);
+        this.viewBlockedNodes = opts.blockedNodes;
+        this.coordDirty;
+        this.rects = [];
         //this.$stats       = $('#stats');
     };
     /**
@@ -75,7 +90,7 @@ sap.ui.define([
             numCols     = this.numCols,
             numRows     = this.numRows,
             paper       = this.paper,
-            rects       = rects = [];
+            rects       = this.rects;
             //$stats      = this.$stats;
 
         paper.setSize(numCols * nodeSize, numRows * nodeSize);
@@ -144,7 +159,49 @@ sap.ui.define([
     /**
      * Set the attribute of the node at the given coordinate.
      */
-    View.setAttributeAt = function(nodes, gridX, gridY, attr, value, blockedNode) {
+     View.setAttributeAt = function(gridX, gridY, attr, value) {
+        var color,
+            node;
+        switch (attr) {
+        case 'walkable':
+            color = value ? nodeStyle.normal.fill : nodeStyle.blocked.fill;
+            this.setWalkableAt(gridX, gridY, value);
+            break;
+        case 'opened':
+            this.colorizeNode(this.rects[gridY][gridX], nodeStyle.opened.fill);
+            this.setCoordDirty(gridX, gridY, true);
+            break;
+        case 'closed':
+            this.colorizeNode(this.rects[gridY][gridX], nodeStyle.closed.fill);
+            this.setCoordDirty(gridX, gridY, true);
+            break;
+        case 'tested':
+            color = (value === true) ? nodeStyle.tested.fill : nodeStyle.normal.fill;
+
+            this.colorizeNode(this.rects[gridY][gridX], color);
+            this.setCoordDirty(gridX, gridY, true);
+            break;
+        case 'product':
+            if(value === "high") {
+                color = nodeStyle.high.fill;
+            } else if(value === "medium") {
+                color = nodeStyle.medium.fill;
+            } else {
+                color = nodeStyle.low.fill;
+            }
+            this.colorizeNode(this.blockedNodes[gridY][gridX], color);
+            //this.blockedNodes[gridY][gridX] = this.rects[gridY][gridX];
+        case 'parent':
+            // XXX: Maybe draw a line from this node to its parent?
+            // This would be expensive.
+            break;
+        default:
+            console.error('unsupported operation: ' + attr + ':' + value);
+            return;
+        }
+        return node;
+    };
+    View.setAttributeAt_back = function(nodes, gridX, gridY, attr, value, blockedNode) {
         var color,
             node;
         switch (attr) {
@@ -183,12 +240,12 @@ sap.ui.define([
     };
     View.zoomNode = function(node) {
         node.toFront().attr({
-            transform: this.nodeZoomEffect.transform,
+            transform: nodeZoomEffect.transform,
         }).animate({
-            transform: this.nodeZoomEffect.transformBack,
-        }, this.nodeZoomEffect.duration);
+            transform: nodeZoomEffect.transformBack,
+        }, nodeZoomEffect.duration);
     };
-    View.setWalkableAt = function(nodes, gridX, gridY, value, blockedNode) {
+    View.setWalkableAt_back = function(nodes, gridX, gridY, value, blockedNode) {
         var node, i, blockedNodes;
         if (blockedNode) {
             blockedNodes = blockedNode;
@@ -222,11 +279,42 @@ sap.ui.define([
                 return;
             }
             node = blockedNodes[gridY][gridX] = nodes.nodes[gridY][gridX];
+            this.viewBlockedNodes[gridY][gridX] = node;
             this.setBlockedNodePos(gridX, gridY);
             //this.colorizeNode(node, nodeStyle.blocked.fill);
             //this.zoomNode(node);
         }
         return node;
+    };
+    View.setWalkableAt = function(gridX, gridY, value) {
+        var node, i, blockedNodes = this.blockedNodes;
+        if (!blockedNodes) {
+            blockedNodes = this.blockedNodes = new Array(this.numRows);
+            for (i = 0; i < this.numRows; ++i) {
+                blockedNodes[i] = [];
+            }
+        }
+        node = blockedNodes[gridY][gridX];
+        if (value) {
+            // clear blocked node
+            if (node) {
+                this.colorizeNode(node, this.rects[gridY][gridX].attr('fill'));
+                this.zoomNode(node);
+                setTimeout(function() {
+                    node.remove();
+                }, nodeZoomEffect.duration);
+                blockedNodes[gridY][gridX] = null;
+            }
+        } else {
+            // draw blocked node
+            if (node) {
+                return;
+            }
+            node = blockedNodes[gridY][gridX] = this.rects[gridY][gridX].clone();
+            this.colorizeNode(node, nodeStyle.blocked.fill);
+            //this.zoomNode(node);
+        }
+        this.blockedNodes[gridY][gridX] = node;
     };
     View.setBlockedNodePos = function(gridX, gridY) {
         var coord = View.toPageCoordinate(gridX, gridY);
@@ -266,8 +354,8 @@ sap.ui.define([
         for (i = 0; i < this.numRows; ++i) {
             for (j = 0 ;j < this.numCols; ++j) {
                 if (blockedNodes[i][j]) {
-                    blockedNodes[i][j].remove();
-                    blockedNodes[i][j] = null;
+                    this.blockedNodes[i][j].remove();
+                    this.blockedNodes[i][j] = null;
                 }
             }
         }
@@ -304,8 +392,8 @@ sap.ui.define([
      */
     View.toGridCoordinate = function(pageX, pageY) {
         return [
-            Math.floor(pageX / this.nodeSize),
-            Math.floor(pageY / this.nodeSize)
+            Math.floor(pageX / nodeSize),
+            Math.floor(pageY / nodeSize)
         ];
     };
     /**

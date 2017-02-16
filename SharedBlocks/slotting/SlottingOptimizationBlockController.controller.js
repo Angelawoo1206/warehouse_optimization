@@ -1,8 +1,9 @@
 sap.ui.define([
 	"webapp_2/controller/BaseController",
 	"webapp_2/pathfinding/core/Grid",
-    "webapp_2/thirdparty/js/View"
-], function (BaseController, Grid, View) {
+    "webapp_2/thirdparty/js/View",
+    "webapp_2/thirdparty/js/Controller"
+], function (BaseController, Grid, View, Controller) {
 	"use strict";
 
 	return BaseController.extend("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController", {
@@ -100,36 +101,82 @@ sap.ui.define([
 	        for(var j=0;j<36;j++) {
 	            this.blockedNodes[j] = new Array();
 	        }
+	        this.Controller = Controller;
 		},
 
 		onAfterRendering: function() {
-			this.draw();
+			this.draw("classical", true);
 		},
 
-		draw: function() {
+		draw: function(layout, init) {
 			var numCols = this.gridSize[0],
             numRows = this.gridSize[1];
             this.grid = new Grid.Grid(numCols, numRows);
             var that = this;
-	        var draw_area = this.byId("draw_area").sId;
+            var draw_area;
+            if(!layout) {
+            	draw_area = this.byId("draw_area").sId;
+            } else {
+            	draw_area = "__xmlview0--slottingblock-Collapsed--draw_area";
+            }
+
 	        if(!View.paper) {
 	        	View.init({
 		            numCols: numCols,
 		            numRows: numRows,
-		            draw_area: draw_area
+		            draw_area: draw_area,
+		            blockedNodes: that.blockedNodes
 		        });
 
 		        View.generateGrid(function() {
 		            that.setDefaultStartEndPos();
-		            that.setDefaultLayout();
+		            that.setDefaultLayout(layout);
 		            //this.setDefaultLayout(oLayout);
-		            //this.bindEvents();
 		            //this.transition(); // transit to the next state (ready)
 		        });
 	        }
-	        
+	        if(!init) {
+	        	this.clearAll();
+	        	this.setDefaultLayout(layout);
+	        }
 		},
+		bindEvents: function(draw_area) {
+	        $("#__xmlview0--slottingblock-Collapsed--draw_area").mousedown($.proxy(this.mousedown, this));
+	        $(window)
+	            .mousemove($.proxy(this.mousemove, this))
+	            .mouseup($.proxy(this.mouseup, this));
+	    },
+	    mousedown: function (event) {
+	        var coord = View.toGridCoordinate(event.pageX, event.pageY),
+	            gridX = coord[0],
+	            gridY = coord[1],
+	            grid  = this.grid;
 
+	        if (this.can('dragStart') && this.isStartPos(gridX, gridY)) {
+	            this.dragStart();
+	            return;
+	        }
+	        if (this.can('dragEnd') && this.isEndPos(gridX, gridY)) {
+	            this.dragEnd();
+	            return;
+	        }
+	        if (this.can('drawWall') && grid.isWalkableAt(gridX, gridY)) {
+	            this.drawWall(gridX, gridY);
+	            return;
+	        }
+	        if (this.can('eraseWall') && !grid.isWalkableAt(gridX, gridY)) {
+	            this.eraseWall(gridX, gridY);
+	        }
+	    },
+	    isStartPos: function(gridX, gridY) {
+	        return gridX === this.startX && gridY === this.startY;
+	    },
+	    isEndPos: function(gridX, gridY) {
+	        return gridX === this.endX && gridY === this.endY;
+	    },
+	    isStartOrEndPos: function(gridX, gridY) {
+	        return this.isStartPos(gridX, gridY) || this.isEndPos(gridX, gridY);
+	    },
 		/**
 	     * When initializing, this method will be called to set the positions
 	     * of start node and end node.
@@ -164,7 +211,7 @@ sap.ui.define([
 	        View.setEndPos(gridX, gridY);
 	    },
 
-	    setDefaultLayout: function() {
+	    setDefaultLayout: function(layout) {
 	    	var width, height,
 	            marginRight, availWidth,
 	            centerX, centerY,
@@ -176,8 +223,15 @@ sap.ui.define([
 
 	        centerX = Math.ceil(width / 2 / 10);
 	        centerY = Math.floor(height / 2 / 10);
-	        this.drawFishboneLayout(centerX, centerY);
-	        this.clearAll();
+	        if(!layout){
+	        	this.drawTraditionalLayout(centerX, centerY);
+	        } else if (layout === "V-style") {
+	        	this.drawFlyingVLayout(centerX, centerY);
+	        } else if(layout === "classical") {
+	        	this.drawTraditionalLayout(centerX, centerY);
+	        } else {
+	        	this.drawFishboneLayout(centerX, centerY);
+	        }
 	    },
 
 	    drawTraditionalLayout: function(gridX, gridY) {
@@ -185,7 +239,7 @@ sap.ui.define([
 	     		startX = gridX - 30,
 	     		endY = gridY;
 	        for(var i=startX+2; i<=endX-2;i++) {
-                for(var j=2;j<=this.endY+8;j++) {
+                for(var j=2;j<=endY+8;j++) {
                     if(i%4==0 ||i%4==1) {
                         this.setWalkableAt(i, j, false);
                     }
@@ -282,15 +336,34 @@ sap.ui.define([
 	        }
 	    },
 
+	    bindingProductToLayout: function(products) {
+	    	for (var i = 0; i < View.numRows; ++i) {
+	            for (var j = 0 ;j < View.numCols; ++j) {
+	                if (View.blockedNodes[i][j]) {
+	                	if(j<44) {
+	                		View.setAttributeAt(j, i, "product", "high");
+	                	} else if(j>=44 && j<68) {
+	                		View.setAttributeAt(j, i, "product", "medium");
+	                	} else {
+	                		View.setAttributeAt(j, i, "product", "low");
+	                	}
+	                    
+	                }
+	            }
+	        }
+	    	var blockedNodes = View.blockedNodes;
+	    },
+
 	    setWalkableAt: function(gridX, gridY, walkable) {
 	    	
 	    	Grid.setWalkableAt(this.grid, gridX, gridY, walkable);
+	    	View.setAttributeAt(gridX, gridY, 'walkable', walkable);
 
-	    	if (walkable) {
+	    	/*if (walkable) {
 	    		this.blockedNodes[gridY][gridX] = View.setAttributeAt(this.grid, gridX, gridY, 'walkable', walkable, this.blockedNodes);
 	    	} else {
 	    		this.blockedNodes[gridY][gridX] = View.setAttributeAt(this.grid, gridX, gridY, 'walkable', walkable);
-	    	}
+	    	}*/
 	    },
 
 		_onRouteMatched : function (oEvent) {
@@ -333,6 +406,7 @@ sap.ui.define([
 	        View.clearPath();
 	    },
 	    clearAll: function() {
+
 	        this.clearFootprints();
 	        View.clearBlockedNodes();
 	    }
