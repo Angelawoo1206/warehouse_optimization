@@ -21,46 +21,47 @@
                 "type": "JSON"
             }
         }
+    }
 
+},
+"sap.ui": {
+    "_version": "1.1.0",
+    "technology": "UI5",
+    "deviceTypes": {
+        "desktop": true,
+        "tablet": true,
+        "phone": true
     },
-    "sap.ui": {
-        "_version": "1.1.0",
-        "technology": "UI5",
-        "deviceTypes": {
-            "desktop": true,
-            "tablet": true,
-            "phone": true
-        },
-        "supportedThemes": [
+    "supportedThemes": [
 		"sap_hcb",
 		"sap_belize"
 	]
+},
+"sap.ui5": {
+    "_version": "1.1.0",
+    "rootView": "sap.m.sample.SemanticPage.view.Page",
+    "dependencies": {
+        "minUI5Version": "1.30",
+        "libs": {
+            "sap.m": {}
+        }
     },
-    "sap.ui5": {
-        "_version": "1.1.0",
-        "rootView": "sap.m.sample.SemanticPage.view.Page",
-        "dependencies": {
-            "minUI5Version": "1.30",
-            "libs": {
-                "sap.m": {}
-            }
-        },
 
-        "models": {
+    "models": {
 
-            "layouts": {
-                "dataSource": "layoutRemote"
-            },
-            "datasets": {
-                "dataSource": "datasetsRemote"
-            }
+        "layouts": {
+            "dataSource": "layoutRemote"
         },
-        "resources": {
-            "css": [
-                {
-                    "uri": "css/style.css"
+        "datasets": {
+            "dataSource": "datasetsRemote"
+        }
+    },
+    "resources": {
+        "css": [
+            {
+                "uri": "css/style.css"
 		}
 	  ]
-        }
     }
+}
 }
