@@ -114,7 +114,7 @@ sap.ui.define([
             oLayoutData.forEach(function (layoutItem) {
                 if (layoutId == layoutItem.id) {
                     oViewModel.setProperty("/layout_name", layoutItem.name);
-                    sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").draw(layoutItem.name, false);
+                    sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").draw(layoutItem, false);
                 }
             });
             this.getView().setModel(oViewModel, "view");

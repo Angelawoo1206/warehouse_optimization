@@ -6,7 +6,7 @@ sap.ui.define([
      * It uses raphael.js to show the grids.
      */
     var View = {};
-    var nodeSize = 12; // width and height of a single node, in pixel
+    var nodeSize = 40; // width and height of a single node, in pixel
     var nodeStyle = {
         normal: {
             fill: 'white',
@@ -69,7 +69,9 @@ sap.ui.define([
     View.init = function(opts) {
         this.numCols      = opts.numCols;
         this.numRows      = opts.numRows;
-        this.paper        = Raphael(opts.draw_area);
+        if(!this.paper) {
+            this.paper    = Raphael(opts.draw_area);
+        }
         this.viewBlockedNodes = opts.blockedNodes;
         this.coordDirty;
         this.rects = [];
@@ -315,6 +317,9 @@ sap.ui.define([
             //this.zoomNode(node);
         }
         this.blockedNodes[gridY][gridX] = node;
+        if(node) {
+            this.blockedNodes[gridY][gridX].id = this.blockedNodes[gridY][gridX].id;
+        }
     };
     View.setBlockedNodePos = function(gridX, gridY) {
         var coord = View.toPageCoordinate(gridX, gridY);

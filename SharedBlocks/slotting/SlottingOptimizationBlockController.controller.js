@@ -8,7 +8,7 @@ sap.ui.define([
 
 	return BaseController.extend("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController", {
 
-		gridSize: [84, 36], // number of nodes horizontally and vertically
+		gridSize: [16, 18], // number of nodes horizontally and vertically
 
 		Controller: StateMachine.create({
 		    initial: 'none',
@@ -105,7 +105,28 @@ sap.ui.define([
 		},
 
 		onAfterRendering: function() {
-			this.draw("classical", true);
+			var layout = {name: "Traditional",
+						  map: [
+					     		["C","0","0","0","0","0","0","0","0","0","0","0","0","0","0","S"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],
+					     		["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],
+					     		["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","]","[","0","]","[","0","]","[","0","]","[","0","]","[","0"],
+					     		["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]
+					     	]};
+			this.draw(layout, true);
 		},
 
 		draw: function(layout, init) {
@@ -129,15 +150,15 @@ sap.ui.define([
 		        });
 
 		        View.generateGrid(function() {
-		            that.setDefaultStartEndPos();
-		            that.setDefaultLayout(layout);
+		            //that.setDefaultStartEndPos();
+		            that.drawLayout(layout);
 		            //this.setDefaultLayout(oLayout);
 		            //this.transition(); // transit to the next state (ready)
 		        });
 	        }
 	        if(!init) {
 	        	this.clearAll();
-	        	this.setDefaultLayout(layout);
+		        this.drawLayout(layout);
 	        }
 		},
 		bindEvents: function(draw_area) {
@@ -183,20 +204,8 @@ sap.ui.define([
 	     * It will detect user's display size, and compute the best positions.
 	     */
 	    setDefaultStartEndPos: function() {
-	        var width, height,
-	            marginRight, availWidth,
-	            centerX, centerY,
-	            endX, endY,
-	            nodeSize = View.nodeSize;
-
-	        width  = View.paper.width;
-	        height = View.paper.height;
-
-	        centerX = Math.ceil(width / 2 / 10);
-	        centerY = Math.floor(height / 2 / 10);
-
-	        this.setStartPos(centerX + 29, centerY);
-	        this.setEndPos(centerX - 30, centerY);
+	        //this.setStartPos(0, 0);
+	        //this.setEndPos(17, 0);
 	    },
 
 	    setStartPos: function(gridX, gridY) {
@@ -223,14 +232,24 @@ sap.ui.define([
 
 	        centerX = Math.ceil(width / 2 / 10);
 	        centerY = Math.floor(height / 2 / 10);
-	        if(!layout){
-	        	this.drawTraditionalLayout(centerX, centerY);
-	        } else if (layout === "V-style") {
-	        	this.drawFlyingVLayout(centerX, centerY);
-	        } else if(layout === "classical") {
-	        	this.drawTraditionalLayout(centerX, centerY);
-	        } else {
-	        	this.drawFishboneLayout(centerX, centerY);
+	    },
+
+	    drawLayout: function(layout) {
+	     	var traditionalLayout = layout.map;
+	        for(var i=0; i<traditionalLayout.length;i++) {
+                for(var j=0;j<traditionalLayout[i].length;j++) {
+                	if(traditionalLayout[i][j] === "C") {
+                		this.setStartPos(j, i);
+                	} else if(traditionalLayout[i][j] === "S") {
+                		this.setEndPos(j, i);
+                	} else if(traditionalLayout[i][j] === "[" || traditionalLayout[i][j] === "]") {
+                		this.setWalkableAt(j, i, false);
+                	} else if(traditionalLayout[i][j] === "A" || traditionalLayout[i][j] === "V") {
+                		this.setWalkableAt(j, i, false);
+                	} else {
+                		this.setWalkableAt(j, i, true);
+                	}
+                }
 	        }
 	    },
 
@@ -337,21 +356,44 @@ sap.ui.define([
 	    },
 
 	    bindingProductToLayout: function(products) {
+	    	this.productInfo = {
+	    		nodeId: null,
+	    		productId: null,
+	    		priority: null
+	    	};
+	    	this.productedNodes = products;
+	    	this.loopCount = 0;
 	    	for (var i = 0; i < View.numRows; ++i) {
 	            for (var j = 0 ;j < View.numCols; ++j) {
 	                if (View.blockedNodes[i][j]) {
-	                	if(j<44) {
-	                		View.setAttributeAt(j, i, "product", "high");
-	                	} else if(j>=44 && j<68) {
-	                		View.setAttributeAt(j, i, "product", "medium");
-	                	} else {
-	                		View.setAttributeAt(j, i, "product", "low");
-	                	}
-	                    
+						this.getProductInfo(this.productedNodes);
+						View.setAttributeAt(j, i, "product", this.productInfo.priority);	                    
 	                }
+	                this.loopCount++;
 	            }
+	            this.loopCount++;
 	        }
 	    	var blockedNodes = View.blockedNodes;
+	    },
+
+	    getProductInfo: function(products) {
+	    	for(var i=0;i<products.length;i++) {
+	    		for(var j=0;j<products[i].length;j++) {
+	    			if(products[i][j]) {
+	    				if(i===0) {
+	    					this.productInfo.priority = "high";
+	    				} else if(i===1) {
+	    					this.productInfo.priority = "medium";
+	    				} else {
+	    					this.productInfo.priority = "low";
+	    				}
+	    				this.productInfo.nodeId = products[i][j].block_id;
+	    				this.productInfo.productId = products[i][j].product_id;
+	    				this.productedNodes[i][j] = null;
+	    				return this.productInfo;
+	    			}
+	    		}
+	    	}
 	    },
 
 	    setWalkableAt: function(gridX, gridY, walkable) {
