@@ -97,7 +97,7 @@ $.extend(Controller, {
     /**
      * Asynchronous transition from `none` state to `ready` state.
      */
-    onleavenone: function() {
+    /*onleavenone: function() {
         var numCols = this.gridSize[0],
             numRows = this.gridSize[1];
 
@@ -128,7 +128,7 @@ $.extend(Controller, {
 
         return StateMachine.ASYNC;
         // => ready
-    },
+    },*/
     ondrawWall: function(event, from, to, gridX, gridY) {
         this.setWalkableAt(gridX, gridY, false);
         // => drawingWall
@@ -351,7 +351,7 @@ $.extend(Controller, {
         this.operations = [];
     },
     bindEvents: function() {
-        $('#draw_area').mousedown($.proxy(this.mousedown, this));
+        $('#__xmlview0--slottingblock-Collapsed--draw_area').mousedown($.proxy(this.mousedown, this));
         $(window)
             .mousemove($.proxy(this.mousemove, this))
             .mouseup($.proxy(this.mouseup, this));
@@ -416,6 +416,9 @@ $.extend(Controller, {
         if (this.can('eraseWall') && !grid.isWalkableAt(gridX, gridY)) {
             this.eraseWall(gridX, gridY);
         }
+    },
+    can: function (l) {
+        return !this.transition&&(c[l].hasOwnProperty(this.current)||c[l].hasOwnProperty(StateMachine.WILDCARD))
     },
     mousemove: function(event) {
         var coord = View.toGridCoordinate(event.pageX, event.pageY),

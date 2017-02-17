@@ -79,14 +79,10 @@ sap.ui.define([
 
             var oSlottingResult = new JSONModel();
             this.getView().setModel(oSlottingResult, "slottingResult");
-
-
-            //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             this.theTokenInput = this.getView().byId("multiInput");
             this.theTokenInput.setEnableMultiLineMode(sap.ui.Device.system.phone);
 
             this.aKeys = ["id", "description"];
-
         },
 
         selectPlanningById: function (planningId) {
@@ -99,7 +95,6 @@ sap.ui.define([
                     oViewModel.setProperty("/planning", JSON.parse(JSON.stringify(planningItem)));
                 }
             });
-
             this.getView().setModel(oViewModel, "view");
         },
 
@@ -113,7 +108,6 @@ sap.ui.define([
                     sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").draw(layoutItem, false);
                 }
             });
-
             this.getView().setModel(oViewModel, "view");
         },
 
@@ -123,7 +117,6 @@ sap.ui.define([
 
             var comboBox_layout = this.byId("comboBox_layout");
             comboBox_layout.setEnabled(true);
-
             var multiInput = this.byId("multiInput");
             multiInput.setEnabled(true);
         },
@@ -152,7 +145,6 @@ sap.ui.define([
                 url: url,
                 success: function (data) {
                     slottingResult.setData(data);
-                    
                     sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").bindingProductToLayout(data);
 
                     var slider_max_cost = that.byId("slider_max_cost");
@@ -216,7 +208,6 @@ sap.ui.define([
 
 
         },
-
 
         GetWarehouseOrder: function (dataSet) {
             var that = this;
