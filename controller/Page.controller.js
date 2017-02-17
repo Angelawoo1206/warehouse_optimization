@@ -99,7 +99,6 @@ sap.ui.define([
                     oViewModel.setProperty("/planning", JSON.parse(JSON.stringify(planningItem)));
                 }
             });
-
             this.getView().setModel(oViewModel, "view");
         },
 
@@ -110,9 +109,9 @@ sap.ui.define([
             oLayoutData.forEach(function (layoutItem) {
                 if (layoutId == layoutItem.id) {
                     oViewModel.setProperty("/layout_name", layoutItem.name);
+                    sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").draw(layoutItem.name, false);
                 }
             });
-
             this.getView().setModel(oViewModel, "view");
         },
 
@@ -151,6 +150,8 @@ sap.ui.define([
                 url: url,
                 success: function (data) {
                     slottingResult.setData(data);
+
+                    sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").bindingProductToLayout(data);
 
                     var slider_max_cost = that.byId("slider_max_cost");
                     slider_max_cost.setEnabled(true);
