@@ -1,17 +1,13 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:layout="sap.ui.layout" xmlns:forms="sap.ui.layout.form" xmlns="sap.m">
-	<forms:SimpleForm
-			maxContainerCols="1"
-			layout="ResponsiveGridLayout"
-			width="100%">
-		<layout:VerticalLayout>
-			<Label text="Route" design="Bold"/>
-			<Text text="Route"/>
-			<Text text=" "/>
-			<Label text="Labor" design="Bold"/>
-			<Text text="Labor"/>
-			<Text text=" "/>
-			<Label text="Labor" design="Bold"/>
-			<Text text="FFFFFFFFFFFFF"/>
-		</layout:VerticalLayout>
-	</forms:SimpleForm>
+<mvc:View
+	controllerName="sap.m.sample.SemanticPage.SharedBlocks.route.RouteOptimizationBlockController"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:layout="sap.ui.layout"
+	xmlns:forms="sap.ui.layout.form"
+	xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Panel width="100%">
+		<content>
+			<html:div id="draw_area_route"></html:div>
+		</content>
+	</Panel>
 </mvc:View>

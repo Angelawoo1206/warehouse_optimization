@@ -2,8 +2,9 @@ sap.ui.define([
 	"jquery.sap.global",
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
-	"sap/m/MessagePopover"
-], function (jQuery, Controller, JSONModel, MessagePopover) {
+	"sap/m/MessagePopover",
+    "sap/ui/comp/valuehelpdialog/ValueHelpDialog"
+], function (jQuery, Controller, JSONModel, MessagePopover, ValueHelpDialog) {
     "use strict";
     return Controller.extend("sap.m.sample.SemanticPage.controller.Page", {
 
@@ -78,20 +79,10 @@ sap.ui.define([
 
             var oSlottingResult = new JSONModel();
             this.getView().setModel(oSlottingResult, "slottingResult");
+            this.theTokenInput = this.getView().byId("multiInput");
+            this.theTokenInput.setEnableMultiLineMode(sap.ui.Device.system.phone);
 
-
-            var oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
-            var oMessageManager = sap.ui.getCore().getMessageManager();
-
-            oMessageManager.registerMessageProcessor(oMessageProcessor);
-
-            oMessageManager.addMessages(
-                new sap.ui.core.message.Message({
-                    message: "Something wrong happened",
-                    type: sap.ui.core.MessageType.Error,
-                    processor: oMessageProcessor
-                })
-            );
+            this.aKeys = ["id", "description"];
         },
 
         selectPlanningById: function (planningId) {
@@ -126,6 +117,8 @@ sap.ui.define([
 
             var comboBox_layout = this.byId("comboBox_layout");
             comboBox_layout.setEnabled(true);
+            var multiInput = this.byId("multiInput");
+            multiInput.setEnabled(true);
         },
 
         onSelectLayout: function (oEvent) {
@@ -152,7 +145,6 @@ sap.ui.define([
                 url: url,
                 success: function (data) {
                     slottingResult.setData(data);
-
                     sap.ui.controller("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController").bindingProductToLayout(data);
 
                     var slider_max_cost = that.byId("slider_max_cost");
@@ -217,63 +209,128 @@ sap.ui.define([
 
         },
 
-
-        onPress: function (oEvent) {
-
-            sap.m.MessageToast.show("Pressed custom button " + oEvent.getSource().getId());
+        GetWarehouseOrder: function (dataSet) {
+            var that = this;
+            var url = "http://10.58.184.194:8080/wo/rest/dataset/" + dataSet + "/order";
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    that.aItems = data;
+                    that.completeValueHelpRequest();
+                }
+            });
         },
 
-        onSemanticButtonPress: function (oEvent) {
-
-            var sAction = oEvent.getSource().getMetadata().getName();
-            sAction = sAction.replace(oEvent.getSource().getMetadata().getLibraryName() + ".", "");
-
-            sap.m.MessageToast.show("Pressed: " + sAction);
-        },
-        onSemanticSelectChange: function (oEvent, oData) {
-            var sAction = oEvent.getSource().getMetadata().getName();
-            sAction = sAction.replace(oEvent.getSource().getMetadata().getLibraryName() + ".", "");
-
-            var sStatusText = sAction + " by " + oEvent.getSource().getSelectedItem().getText();
-            sap.m.MessageToast.show("Selected: " + sStatusText);
-        },
-        onPositionChange: function (oEvent) {
-            sap.m.MessageToast.show("Positioned changed to " + oEvent.getParameter("newPosition"));
-        },
-        onMessagesButtonPress: function (oEvent) {
-
-            var oMessagesButton = oEvent.getSource();
-            if (!this._messagePopover) {
-                this._messagePopover = new MessagePopover({
-                    items: {
-                        path: "message>/",
-                        template: new MessagePopoverItem({
-                            description: "{message>description}",
-                            type: "{message>type}",
-                            title: "{message>message}"
+        completeValueHelpRequest: function () {
+            var that = this;
+            var oValueHelpDialog = new ValueHelpDialog({
+                basicSearchText: this.theTokenInput.getValue(),
+                title: "Warehouse Orders",
+                supportMultiselect: true,
+                supportRanges: false,
+                supportRangesOnly: false,
+                key: this.aKeys[0],
+                descriptionKey: this.aKeys[1],
+                stretch: sap.ui.Device.system.phone,
+                ok: function (oControlEvent) {
+                    that.aTokens = oControlEvent.getParameter("tokens");
+                    that.theTokenInput.setTokens(that.aTokens);
+                    if (that.aTokens.length <= 3) {
+                        oValueHelpDialog.close();
+                    } else {
+                        sap.ui.getCore().attachInit(function () {
+                            alert("It is not allowed to select more than 3 warehouse orders");
                         })
                     }
-                });
-                oMessagesButton.addDependent(this._messagePopover);
-            }
-            this._messagePopover.toggle(oMessagesButton);
-        },
 
-        onMultiSelectPress: function (oEvent) {
-            if (oEvent.getSource().getPressed()) {
-                sap.m.MessageToast.show("MultiSelect Pressed");
-            } else {
-                sap.m.MessageToast.show("MultiSelect Unpressed");
+                },
+
+                cancel: function (oControlEvent) {
+                    sap.m.MessageToast.show("Cancel pressed!");
+                    oValueHelpDialog.close();
+                },
+
+                afterClose: function () {
+                    oValueHelpDialog.destroy();
+                }
+            });
+
+
+            var oColModel = new sap.ui.model.json.JSONModel();
+            oColModel.setData({
+                cols: [
+                    {
+                        label: "Warehouse Order ID",
+                        template: "id"
+                    },
+                    {
+                        label: "Description",
+                        template: "description"
+                    },
+                    {
+                        label: "Execution Owner",
+                        template: "execution_owner"
+                    },
+                    {
+                        label: "Create Date",
+                        template: "date"
+                }]
+            });
+            oValueHelpDialog.getTable().setModel(oColModel, "columns");
+
+
+            var oRowsModel = new sap.ui.model.json.JSONModel();
+            oRowsModel.setData(this.aItems);
+            oValueHelpDialog.getTable().setModel(oRowsModel);
+            if (oValueHelpDialog.getTable().bindRows) {
+                oValueHelpDialog.getTable().bindRows("/");
             };
+
+            if (oValueHelpDialog.getTable().bindItems) {
+                var oTable = oValueHelpDialog.getTable();
+
+                oTable.bindAggregation("items", "/", function (sId, oContext) {
+                    var aCols = oTable.getModel("columns").getData().cols;
+
+                    return new sap.m.ColumnListItem({
+                        cells: aCols.map(function (column) {
+                            var colname = column.template;
+                            return new sap.m.Label({
+                                text: "{" + colname + "}"
+                            });
+                        })
+                    });
+                });
+            };
+
+            //            oValueHelpDialog.setRangeKeyFields([{
+            //                label: "Warehouse Order ID",
+            //                key: "WO_ID"
+            //                }]);
+
+            oValueHelpDialog.setTokens(this.theTokenInput.getTokens());
+
+
+            if (this.theTokenInput.$().closest(".sapUiSizeCompact").length > 0) { // check if the Token field runs in Compact mode
+                oValueHelpDialog.addStyleClass("sapUiSizeCompact");
+            } else {
+                oValueHelpDialog.addStyleClass("sapUiSizeCozy");
+            }
+
+            oValueHelpDialog.open();
+            oValueHelpDialog.update();
         },
 
-        getDateLeft: function (sDueDate) {
-            var now = new Date();
-            var dueDate = new Date(sDueDate);
-            var dateLeft = Math.floor((dueDate.getTime() - now.getTime()) / (24 * 3600 * 1000));
-            return dateLeft;
+        onValueHelpRequest: function (oEvent) {
+            var that = this;
+            var oViewModel = this.getView().getModel("view");
+            var dataSet = oViewModel.getProperty("/planning/id");
+            this.GetWarehouseOrder(dataSet);
+
         }
 
-    });
+
+    })
 
 });
