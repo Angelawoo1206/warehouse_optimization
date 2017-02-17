@@ -41,6 +41,19 @@
                         <Button id="button_labor" enabled="false" text="Execute" press="onExecuteLaborOptimization"></Button>
                     </l:VerticalLayout>
                 </Panel>
+                <Panel>
+                    <l:VerticalLayout width="100%">
+                        <Label text="Rout Optimization" design="Bold" />
+
+                        <f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" labelSpanS="12" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsL="1" columnsM="1" class="editableForm">
+                            <f:content>
+                                <Label text="Select Warehourse Orders" />
+                                <MultiInput id="multiInput" enabled="false" valueHelpRequest="onValueHelpRequest" maxTokens="3" />
+                            </f:content>
+                        </f:SimpleForm>
+
+                    </l:VerticalLayout>
+                </Panel>
 
             </semantic:MasterPage>
 

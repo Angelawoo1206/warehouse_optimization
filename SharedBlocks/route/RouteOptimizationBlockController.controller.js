@@ -1,11 +1,11 @@
 sap.ui.define([
 	"webapp_2/controller/BaseController",
 	"webapp_2/pathfinding/core/Grid",
-    "webapp_2/thirdparty/js/View"
+    "webapp_2/thirdparty/js/RouteView"
 ], function (BaseController, Grid, View) {
     "use strict";
 
-    return BaseController.extend("sap.m.sample.SemanticPage.SharedBlocks.slotting.SlottingOptimizationBlockController", {
+    return BaseController.extend("sap.m.sample.SemanticPage.SharedBlocks.route.RouteOptimizationBlockController", {
 
         gridSize: [84, 36], // number of nodes horizontally and vertically
 
@@ -104,7 +104,7 @@ sap.ui.define([
                 numRows = this.gridSize[1];
             this.grid = new Grid.Grid(numCols, numRows);
             var that = this;
-            var draw_area = this.byId("draw_area").sId;
+            var draw_area = this.byId("draw_area_route").sId;
             if (!View.paper) {
                 View.init({
                     numCols: numCols,
@@ -113,6 +113,7 @@ sap.ui.define([
                 });
 
                 View.generateGrid(function () {
+
                     that.setDefaultStartEndPos();
                     that.setDefaultLayout();
                     //this.setDefaultLayout(oLayout);
