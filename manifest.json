@@ -1,66 +1,67 @@
 {
-  "_version": "1.1.0",
-  "sap.app": {
-	"_version": "1.1.0",
-	"id": "sap.ui.demo.wt",
-	"type": "application",
-	"i18n": "i18n/i18n.properties",
-	"title": "",
-	"description": "",
-	"applicationVersion": {
-	  "version": "1.0.0"
-	},
-      
-	"dataSources": {
-      "datasetsRemote": {
-          "uri":"http://10.58.184.194:8080/wo/rest/dataset",
-          "type": "JSON" 
-	  },
-        "layoutRemote":{
-            "uri":"http://10.58.184.194:8080/wo/rest/layout",
-            "type":"JSON"
+    "_version": "1.1.0",
+    "sap.app": {
+        "_version": "1.1.0",
+        "id": "sap.ui.demo.wt",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "title": "",
+        "description": "",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+
+        "dataSources": {
+            "datasetsRemote": {
+                "uri": "http://10.58.184.194:8080/wo/rest/dataset",
+                "type": "JSON"
+            },
+            "layoutRemote": {
+                "uri": "http://10.58.184.194:8080/wo/rest/layout",
+                "type": "JSON"
+            }
         }
-	}
-      
-  },
-  "sap.ui": {
-	"_version": "1.1.0",
-	"technology": "UI5",
-	"deviceTypes": {
-	  "desktop": true,
-	  "tablet": true,
-	  "phone": true
-	},
-	"supportedThemes": [
+    }
+
+},
+"sap.ui": {
+    "_version": "1.1.0",
+    "technology": "UI5",
+    "deviceTypes": {
+        "desktop": true,
+        "tablet": true,
+        "phone": true
+    },
+    "supportedThemes": [
 		"sap_hcb",
 		"sap_belize"
 	]
-  },
-  "sap.ui5": {
-	"_version": "1.1.0",
-	"rootView": "sap.m.sample.SemanticPage.view.Page",
-	"dependencies": {
-	  "minUI5Version": "1.30",
-	  "libs": {
-		"sap.m": {}
-	  }
-	},
-      
-	"models": {
-      
-     "layouts":{
-        "dataSource":"layoutRemote"
-      },
-    "datasets":{
-          "dataSource":"datasetsRemote"
-      }    
-	},
-	"resources": {
-	  "css": [
-		{
-		  "uri": "css/style.css"
+},
+"sap.ui5": {
+    "_version": "1.1.0",
+    "rootView": "sap.m.sample.SemanticPage.view.Page",
+    "dependencies": {
+        "minUI5Version": "1.30",
+        "libs": {
+            "sap.m": {}
+        }
+    },
+
+    "models": {
+
+        "layouts": {
+            "dataSource": "layoutRemote"
+        },
+        "datasets": {
+            "dataSource": "datasetsRemote"
+        }
+    },
+    "resources": {
+        "css": [
+            {
+                "uri": "css/style.css"
 		}
 	  ]
-	}
-  }
+    }
+}
 }

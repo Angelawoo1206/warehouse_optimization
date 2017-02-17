@@ -1,144 +1,137 @@
+<mvc:View height="100%" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:f="sap.ui.layout.form" controllerName="sap.m.sample.SemanticPage.controller.Page" xmlns:semantic="sap.m.semantic" xmlns:uxap="sap.uxap" xmlns:slotting="sap.m.sample.SemanticPage.SharedBlocks.slotting" xmlns:time="sap.m.sample.SemanticPage.SharedBlocks.labor.time" xmlns:cost="sap.m.sample.SemanticPage.SharedBlocks.labor.cost" xmlns:route="sap.m.sample.SemanticPage.SharedBlocks.route" displayBlock="true">
 
-<mvc:View
-		height="100%"
-		xmlns:core="sap.ui.core"
-		xmlns:mvc="sap.ui.core.mvc"
-        xmlns:l="sap.ui.layout"
-		xmlns="sap.m"
-        xmlns:f="sap.ui.layout.form"
-		controllerName="sap.m.sample.SemanticPage.controller.Page"
-		xmlns:semantic="sap.m.semantic"
-        xmlns:uxap="sap.uxap"
-        xmlns:slotting="sap.m.sample.SemanticPage.SharedBlocks.slotting"
-        xmlns:time="sap.m.sample.SemanticPage.SharedBlocks.labor.time"
-        xmlns:cost="sap.m.sample.SemanticPage.SharedBlocks.labor.cost"
-        xmlns:route="sap.m.sample.SemanticPage.SharedBlocks.route"
-		displayBlock="true">
-
-	<SplitContainer>
-		<masterPages>
-			<semantic:MasterPage title="Operation">
-            <Panel width="100%" class="sapUiResponsiveMargin" accessibleRole="Region">
-                <l:VerticalLayout class="sapUiSmallMargin">
-                     <Label text="Planning ID" design="Bold"/>
-                  <ComboBox selectedKey = "{view>/planning/id}" selectionChange = "onSelectPlanning"
-				items="{
+    <SplitContainer>
+        <masterPages>
+            <semantic:MasterPage title="Operation">
+                <Panel width="100%" class="sapUiResponsiveMargin" accessibleRole="Region">
+                    <l:VerticalLayout class="sapUiSmallMargin">
+                        <Label text="Planning ID" design="Bold" />
+                        <ComboBox selectedKey="{view>/planning/id}" selectionChange="onSelectPlanning" items="{
 					path: 'datasets>/'
 				        }">
-				<core:Item key="{datasets>id}" text="{datasets>id}" />
-			</ComboBox>
-                    <Label text="Layout" design="Bold"/>
-                    <ComboBox selectedKey = "{view>/layout_id}" selectionChange = "onSelectLayout"  
-				items="{
+                            <core:Item key="{datasets>id}" text="{datasets>id}" />
+                        </ComboBox>
+                        <Label text="Layout" design="Bold" />
+                        <ComboBox id="comboBox_layout" selectedKey="{view>/layout_id}" selectionChange="onSelectLayout" enabled="false" items="{
 					path: 'layouts>/'
 				}">
-				<core:Item key="{layouts>id}" text="{layouts>name}"/>
-			</ComboBox>
-                </l:VerticalLayout>
+                            <core:Item key="{layouts>id}" text="{layouts>name}" />
+                        </ComboBox>
+                    </l:VerticalLayout>
                 </Panel>
                 <Panel width="100%" class="sapUiResponsiveMargin" accessibleRole="Region">
                     <l:VerticalLayout width="100%">
-                        <Label text="Slotting Optimization" design="Bold"/>
-                      <Text text="Support Factor for Product Association"></Text>
-                       <Slider enableTickmarks="true" value="{view>/slotting_parameter}" min="0" max="1" step="0.1"  showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px"/>
-                        <Button text="Execute" press="onExcuteSlotting"></Button>
-                         </l:VerticalLayout>
-                  </Panel>
-                 <Panel width="100%" class="sapUiResponsiveMargin" accessibleRole="Region">
-                     <l:VerticalLayout width="100%">
-                    <Label text="Labor Optimization" design="Bold"/>
-                      <Text text="Maximum Acceptable Cost"></Text>
-                          <Slider enableTickmarks="true" value="{laborParameters>/max_cost}" min="0" max="10000" step="1000" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px"/>
-                      <Text text="Process Time Limit"></Text>
-                         <Slider enableTickmarks="true" value="{laborParameters>/max_days}" min="0" max="15" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px"/>
-                         <Text text="FTE OT Pay"></Text>
-                          <Slider enableTickmarks="true" value="{laborParameters>/parameter/fte/overtime_cost}" min="0" max="200" step="10" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px"/>
-                         <Text text="Temporary Worker Pay"></Text>
-                           <Slider enableTickmarks="true" value="{laborParameters>/parameter/temp/cost}" min="0" max="200" step="10" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px"/>
-                         <Button text="Execute" press="onExecuteLaborOptimization"></Button>
+                        <Label text="Slotting Optimization" design="Bold" />
+                        <Text text="Support Factor for Product Association"></Text>
+                        <Slider id="slider_slotting" enabled="false" enableTickmarks="true" value="{view>/slotting_parameter}" min="0" max="1" step="0.1" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px" />
+                        <Button id="button_slotting" enabled="false" text="Execute" press="onExcuteSlotting"></Button>
+                    </l:VerticalLayout>
+                </Panel>
+                <Panel width="100%" class="sapUiResponsiveMargin" accessibleRole="Region">
+                    <l:VerticalLayout width="100%">
+                        <Label text="Labor Optimization" design="Bold" />
+                        <Text text="Maximum Acceptable Cost"></Text>
+                        <Slider id="slider_max_cost" enabled="false" enableTickmarks="true" value="{laborParameters>/max_cost}" min="0" max="10000" step="1000" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px" />
+                        <Text text="Process Time Limit"></Text>
+                        <Slider id="slider_process_time" enabled="false" enableTickmarks="true" value="{laborParameters>/max_days}" min="0" max="15" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px" />
+                        <Text text="FTE OT Pay"></Text>
+                        <Slider id="slider_fte_ot_pay" enabled="false" enableTickmarks="true" value="{laborParameters>/parameter/fte/overtime_cost}" min="0" max="200" step="10" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px" />
+                        <Text text="Temporary Worker Pay"></Text>
+                        <Slider id="slider_temporary_pay" enabled="false" enableTickmarks="true" value="{laborParameters>/parameter/temp/cost}" min="0" max="200" step="10" showAdvancedTooltip="true" inputsAsTooltips="true" class="sapUiSmallMarginBottom" width="250px" />
+                        <Button id="button_labor" enabled="false" text="Execute" press="onExecuteLaborOptimization"></Button>
+                    </l:VerticalLayout>
+                </Panel>
+                <Panel>
+                    <l:VerticalLayout width="100%">
+                        <Label text="Rout Optimization" design="Bold" />
+
+                        <f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" labelSpanS="12" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsL="1" columnsM="1" class="editableForm">
+                            <f:content>
+                                <Label text="Select Warehourse Orders" />
+                                <MultiInput id="multiInput" enabled="false" valueHelpRequest="onValueHelpRequest" maxTokens="3" />
+                            </f:content>
+                        </f:SimpleForm>
+
+                    </l:VerticalLayout>
+                </Panel>
+
+            </semantic:MasterPage>
+
+        </masterPages>
+        <detailPages>
+            <semantic:DetailPage title="">
+
+
+                <uxap:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="true" useIconTabBar="true" showTitleInHeaderContent="false">
+
+                    <uxap:headerTitle>
+                        <uxap:ObjectPageHeader id="headerForTest" headerDesign="Light" objectTitle="Planing ID:{view>/planning/id}">
+                        </uxap:ObjectPageHeader>
+                    </uxap:headerTitle>
+
+                    <uxap:headerContent>
+                        <l:VerticalLayout>
+                            <ObjectStatus title="Description" text="{view>/planning/name}" />
+                            <ObjectStatus title="Warehouse Order Count" text="{view>/planning/order_count}" />
                         </l:VerticalLayout>
-                  </Panel>   
-                
-			</semantic:MasterPage>
-            
-		</masterPages>
-		<detailPages>
-			<semantic:DetailPage title="">
 
-	
-	<uxap:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="true" useIconTabBar="true" showTitleInHeaderContent="false">
-        
-		<uxap:headerTitle>
-			<uxap:ObjectPageHeader id="headerForTest"
-							  headerDesign="Light"
-							  objectTitle="Planing ID:{view>/planning/id}"
-							  >
-			</uxap:ObjectPageHeader>
-		</uxap:headerTitle>
+                        <l:VerticalLayout>
+                            <ObjectStatus title="Start Date" text="{view>/planning/start_date}" />
+                            <ObjectStatus title="End Date" text="{view>/planning/start_date}" />
+                        </l:VerticalLayout>
 
-		<uxap:headerContent>
-			<l:VerticalLayout>
-				<ObjectStatus title="Description" text="{view>/planning/name}"/>
-				<ObjectStatus title="Warehouse Order Count" text="{view>/planning/order_count}"/>
-			</l:VerticalLayout>
-<!--
-            <l:VerticalLayout>
-				<ObjectStatus title="Due Date" text="{view>/planning/DueDate}"/>
-				<ObjectStatus title="Time Left" text="{view>/timeLeft} {= ${view>/timeLeft} > 1 ? 'Days' : 'Day' }"/>
-			</l:VerticalLayout>
--->
-            <l:VerticalLayout>
-				<ObjectStatus title="Layout" text="{view>/layout_name}"/>
-			</l:VerticalLayout>
-		</uxap:headerContent>	
-        
-        <uxap:sections>
-            
-			<uxap:ObjectPageSection id="slotting" title="Slotting Optimization">
-			<uxap:subSections>
-				<uxap:ObjectPageSubSection id="slottingSS1" title="">
-					<uxap:blocks>
-						<slotting:SlottingOptimizationBlock id="slottingblock"/>
-					</uxap:blocks>
-				</uxap:ObjectPageSubSection>
-			</uxap:subSections>
-			</uxap:ObjectPageSection>
+                        <l:VerticalLayout>
+                            <ObjectStatus title="Layout" text="{view>/layout_name}" />
+                        </l:VerticalLayout>
+                    </uxap:headerContent>
 
-			<uxap:ObjectPageSection id="labor" title="Labor Optimization">
-				<uxap:subSections>
-					<uxap:ObjectPageSubSection id="laborSS1" title="Labor Optimization">
-						<uxap:blocks>
-							<time:TimeBlock id="timeblock" columnLayout="3"/>
-                            <cost:CostBlock id="costblock" columnLayout="3"/>
-						</uxap:blocks>
-					</uxap:ObjectPageSubSection>  
-<!--
+                    <uxap:sections>
+
+                        <uxap:ObjectPageSection id="slotting" title="Slotting Optimization">
+                            <uxap:subSections>
+                                <uxap:ObjectPageSubSection id="slottingSS1" title="">
+                                    <uxap:blocks>
+                                        <slotting:SlottingOptimizationBlock id="slottingblock" />
+                                    </uxap:blocks>
+                                </uxap:ObjectPageSubSection>
+                            </uxap:subSections>
+                        </uxap:ObjectPageSection>
+
+                        <uxap:ObjectPageSection id="labor" title="Labor Optimization">
+                            <uxap:subSections>
+                                <uxap:ObjectPageSubSection id="laborSS1" title="Labor Optimization">
+                                    <uxap:blocks>
+                                        <time:TimeBlock id="timeblock" columnLayout="3" />
+                                        <cost:CostBlock id="costblock" columnLayout="3" />
+                                    </uxap:blocks>
+                                </uxap:ObjectPageSubSection>
+                                <!--
                     <uxap:ObjectPageSubSection id="laborSS12" title="Minimum Cost">
 						<uxap:blocks>
 							<labor:LaborOptimizationBlock id="laborblock2"/>
 						</uxap:blocks>
 					</uxap:ObjectPageSubSection>  
 -->
-				</uxap:subSections>
-			 </uxap:ObjectPageSection>   
-            
-            <uxap:ObjectPageSection id="route" title="Route Optimization">
-				<uxap:subSections>
-					<uxap:ObjectPageSubSection id="routeSS1" title="">
-						<uxap:blocks>
-							<route:RouteOptimizationBlock id="routeblock"/>
-						</uxap:blocks>
-					</uxap:ObjectPageSubSection>        
-				</uxap:subSections>
-			 </uxap:ObjectPageSection>   
-            
-		  </uxap:sections>
-        </uxap:ObjectPageLayout>   
-                
-			</semantic:DetailPage>
-            
-		</detailPages>
+                            </uxap:subSections>
+                        </uxap:ObjectPageSection>
 
-	</SplitContainer>
+                        <uxap:ObjectPageSection id="route" title="Route Optimization">
+                            <uxap:subSections>
+                                <uxap:ObjectPageSubSection id="routeSS1" title="">
+                                    <uxap:blocks>
+                                        <route:RouteOptimizationBlock id="routeblock" />
+                                    </uxap:blocks>
+                                </uxap:ObjectPageSubSection>
+                            </uxap:subSections>
+                        </uxap:ObjectPageSection>
+
+                    </uxap:sections>
+                </uxap:ObjectPageLayout>
+
+            </semantic:DetailPage>
+
+        </detailPages>
+
+    </SplitContainer>
 
 </mvc:View>
